@@ -57,30 +57,30 @@ class CreateSubNetworks(object):
         return( [ ip_net ]) 
 
 class ElsSaveMap(object):
-    def __init__(self, object_type):
+    def __init__(self, object_type, doc_type):
         '''
         init global variables
         pass host to elasticsearch connect
         '''
         # elasticsearch
+        #self.client = Elasticsearch(
+        #    transport_class=elasticsearch_opentracing.TracingTransport,
+        #                            hosts=[ settings.ELASTICSEARCH ]
+        #)
         self.client = Elasticsearch(
-            transport_class=elasticsearch_opentracing.TracingTransport,
-                                    hosts=[ settings.ELASTICSEARCH ]
+            hosts=[ settings.ELASTICSEARCH ]
         )
         self.object_type = object_type
-
-    def es_save(self, doc_type, host, netobject):
         self.doc_type = doc_type
+
+    def es_save(self, map_type, host, netobject):
 
         normalize = ''.join(c.lower() for c in host if not c.isspace())
         today = datetime.today().strftime("%m%d%Y")
         _id=(normalize + '-' + today)
 
-        print(netobject.local.lat)
-        print(netobject.local.lon)
-
-
         attribute = {
+            'map_type': map_type,
             'ip': host,
             'network': netobject.network,
             'country': netobject.local.city.country.name,

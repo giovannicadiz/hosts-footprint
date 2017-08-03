@@ -167,7 +167,6 @@ def do_nmap(net):
         hosts_shared_lists.append( host_args )
 
 
-
 def main(options):
 
     shared_info['finalizar'] = False
