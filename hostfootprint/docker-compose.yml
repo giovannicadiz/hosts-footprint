@@ -1,0 +1,11 @@
+version: '2'
+
+services:
+  hostfootprint:
+    image: blacktourmaline/hostfootprint:1
+    labels:
+      io.rancher.container.pull_image: always
+      io.rancher.scheduler.affinity:host_label: sqldbs=1
+    command: python3 manage.py runserver 0.0.0.0:8000
+    ports:
+      - "8000:8000"

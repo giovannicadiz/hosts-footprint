@@ -1,0 +1,50 @@
+{
+    "properties": {
+	"created_at": {
+	    "type": "date",
+            "format": "epoch_millis"
+        }, 
+	"country": {
+	    "index": "true", 
+            "type": "keyword"
+        },
+	"city": {
+	    "index": "true", 
+            "type": "keyword"
+        },
+	"businessunit": {
+	    "index": "true", 
+            "type": "keyword"
+        },
+	"flag": {
+	    "index": "true", 
+            "type": "keyword"
+        },
+	"local_id": {
+	    "index": "true", 
+            "type": "keyword"
+        },
+	"local_address": {
+	    "index": "true", 
+            "type": "keyword"
+        },
+	"local_desc": {
+	    "index": "true", 
+            "type": "keyword"
+        },
+	"geo_point": {
+	    "type": "geo_point"
+	},
+	"network": {
+	    "index": "true", 
+            "type": "keyword"
+	},
+	"ip": {
+            "type": "ip"
+	},
+	"hostname": {
+	    "index": "true", 
+            "type": "keyword"
+	}
+    }
+}
