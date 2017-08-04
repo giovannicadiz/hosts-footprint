@@ -45,6 +45,10 @@
 	"hostname": {
 	    "index": "true", 
             "type": "keyword"
+	},
+	"map_type": {
+	    "index": "true", 
+            "type": "keyword"
 	}
     }
 }
