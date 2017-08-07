@@ -49,6 +49,14 @@
 	"map_type": {
 	    "index": "true", 
             "type": "keyword"
+	},
+	"parsed": {
+	    "index": "true", 
+            "type": "keyword"
+	},
+	"smbclient": {
+	    "index": "true", 
+            "type": "keyword"
 	}
     }
 }
