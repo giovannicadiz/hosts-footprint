@@ -137,9 +137,9 @@ def main(options):
             #pool.close()
             #pool.join()
             
-        #shared_info['finalizar'] = True
+        shared_info['finalizar'] = True
         t.join()
-        #db.connections.close_all()
+        db.connections.close_all()
 
 class Command(BaseCommand):
     help = 'make subnets from networks'
