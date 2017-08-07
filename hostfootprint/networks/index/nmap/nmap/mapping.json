@@ -51,10 +51,61 @@
             "type": "keyword"
 	},
 	"parsed": {
+            "type": "short"
+	},
+	"exit_code": {
+            "type": "short"
+	},
+	"smbclient": {
 	    "index": "true", 
             "type": "keyword"
 	},
-	"smbclient": {
+	"Caption": {
+	    "index": "true", 
+            "type": "keyword"
+	},	    
+	"FreePhysicalMemory": {
+	    "type": "long"
+	},
+	"TotalPhysicalMemory": {
+	    "type": "long"
+	},
+	"IdentifyingNumber": {
+	    "index": "true", 
+            "type": "keyword"
+	},
+	"LoadPercentage": {
+	    "type": "short"
+	},
+	"Manufacturer": {
+	    "index": "true", 
+            "type": "keyword"
+	},
+	"Name": {
+	    "index": "true", 
+            "type": "keyword"
+	},
+	"OSArchitecture": {
+	    "index": "true", 
+            "type": "keyword"
+	},
+	"Product": {
+	    "index": "true", 
+            "type": "keyword"
+	},
+	"SerialNumber": {
+	    "index": "true", 
+            "type": "keyword"
+	},
+	"UUID": {
+	    "index": "true", 
+            "type": "keyword"
+	},
+	"UserName": {
+	    "index": "true", 
+            "type": "keyword"
+	},
+	"Version" : {
 	    "index": "true", 
             "type": "keyword"
 	}
