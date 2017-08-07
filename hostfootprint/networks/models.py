@@ -37,13 +37,14 @@ class CreateSubNetworks(object):
 
     def make_subnetworks(self, network_object):
 
+        print('loading network: %s' % network_object.network)
         try:
             ip_net = ipaddress.ip_network(network_object.network)
             #self.network_object.good_networks = True
         except:
             #self.network_object.good_networks = False
             #self.network_object.save()
-            return(False)
+            ip_net = network_object.network
         try:
             sub_net = ip_net.subnets(new_prefix=24)
             sub_net = list(sub_net)
@@ -75,10 +76,6 @@ class ElsSaveMap(object):
 
     def es_save(self, map_type, host, netobject):
 
-        normalize = ''.join(c.lower() for c in host if not c.isspace())
-        today = datetime.today().strftime("%m%d%Y")
-        _id=(normalize + '-' + today)
-
         attribute = {
             'map_type': map_type,
             'ip': host,
@@ -96,10 +93,15 @@ class ElsSaveMap(object):
             }
         }
 
+        normalize = ''.join(c.lower() for c in host if not c.isspace())
+        today = datetime.today().strftime("%m%d%Y")
+
         data = datetime.now()
         date_els = int( data.timestamp() * 1000 )
 
         attribute['created_at'] = date_els
+        #_id=(normalize + '-' + today)
+        _id=(normalize + '-' + date_els)
 
         response = self.client.index(
             index=self.object_type,

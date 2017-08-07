@@ -76,7 +76,7 @@ def scan_net( subnet_object ):
     nm = nmap.PortScanner()
     nm.scan(
         hosts=subnet_object['net'],
-        ports="445, 22",
+        ports="445,22",
         arguments="-P0 -n --open"
     )
 
