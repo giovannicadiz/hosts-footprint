@@ -31,7 +31,7 @@ es = ElsSaveMap(index, index)
 
 ## ELASTICSEARCH index
 
-NMAPPROCS=100
+NMAPPROCS=50
 HOSTSPROCS=10
 # windows = 'windows'
 # linux = 'linux'
@@ -53,8 +53,7 @@ def get_nets_and_clear():
     return(result)
 
 def print_host(host_args):
-    es.es_save(*host_args)
-
+    es.es_save( *host_args )
 
 def do_print():
     if syncronic():
@@ -96,7 +95,6 @@ def scan_net( subnet_object ):
             es_windows = ('windows', host, subnet_object['netobject'])
             hosts_shared_lists.append( es_windows )
             #with es_lock:
-
             
     if len(hosts_map['22']) > 0:
         for host in hosts_map['22']:
@@ -139,9 +137,9 @@ def main(options):
             #pool.close()
             #pool.join()
             
-        shared_info['finalizar'] = True
+        #shared_info['finalizar'] = True
         t.join()
-        db.connections.close_all()
+        #db.connections.close_all()
 
 class Command(BaseCommand):
     help = 'make subnets from networks'

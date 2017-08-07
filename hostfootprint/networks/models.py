@@ -53,7 +53,6 @@ class CreateSubNetworks(object):
             return(sub_net)
         except:
             sub_net = [ ip_net ]
-
         #self.network_object.save()
         return( [ ip_net ]) 
 
@@ -101,7 +100,7 @@ class ElsSaveMap(object):
 
         attribute['created_at'] = date_els
         #_id=(normalize + '-' + today)
-        _id=(normalize + '-' + date_els)
+        _id=(normalize + '-' + str(date_els))
 
         response = self.client.index(
             index=self.object_type,
