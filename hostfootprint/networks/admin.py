@@ -5,15 +5,14 @@ from networks.models import Network
 admin.site.site_header = 'Host Network - Admin Interface'
 
 class NetworkAdmin(admin.ModelAdmin):
-    list_display_links = [ 'local', 'network', 'description', 'good_networks' ]
+    list_display_links = [ 'network', 'good_networks' ]
     list_display = [
         'local',
         'network',
         'description',
         'good_networks',
-        'total_subnetworks'
     ]
-    search_fields = [ 'network']
+    search_fields = [ 'network' ]
     list_per_page = 40
 
 admin.site.register(Network, NetworkAdmin)

@@ -17,3 +17,5 @@ RUN set -ex; \
     	http_proxy="http://172.32.49.146:9999"  https_proxy="http://172.32.49.146:9999" \ 
 	pip install -r requirements.txt		
 ADD . /hostfootprint
+COPY looping_map.sh /root/looping_map.sh
+COPY screen_hostfootprint /root/.screenrc

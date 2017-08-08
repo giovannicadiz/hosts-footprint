@@ -97,9 +97,14 @@ def time_execution(host, timeout=30):
         
 def update_es_winexe(_id, winexe):
 
+    if 'Caption' not in winexe:
+        parsed = -1
+    else:
+        parsed = 1
+
     _id = _id
     winmap_dict = {
-        'parsed': 1,
+        'parsed': parsed
     }
 
     for i in winexe:
@@ -119,6 +124,7 @@ def update_es_winexe(_id, winexe):
         "doc": winmap_dict
     }
 
+    print(body)
     try:
         response = es.update(
             index=INDEX,
@@ -153,10 +159,8 @@ def smbclient(host, timeout=20):
             end[2] == 'NT_STATUS_IO_TIMEOUT'
 
 
-    print(end)
-    if end[1] == 0:
-        hosts_shared_lists.append( host )
-    return(end)
+    hosts_shared_lists.append( host )
+    #return(end)
 
 
 def get_ip(country):

@@ -5,10 +5,12 @@
 ## add lock to check index
 ## sacar 2 consulta DB
 
+import sys
 #from __future__ import print_function
 from django.core.management.base import BaseCommand, CommandError
 from networks.models import *
 from django.db.utils import IntegrityError
+
 
 from django import db
 
@@ -164,6 +166,3 @@ hosts_shared_lists = manager.list([])
 hosts_error_list = manager.list([])
 nets_shared_lists = manager.list([])
 shared_info = manager.dict()
-
-if __name__ == "__main__":
-    main()
