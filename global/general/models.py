@@ -168,7 +168,9 @@ class Local(models.Model):
     
     lat = models.FloatField(verbose_name=(u'Latitud'), blank=True, null=True)
     lon = models.FloatField(verbose_name=(u'Longitud'), blank=True, null=True)
-                                
+
+    activo = models.BooleanField(default=True)
+
     def __str__(self):
         return(u'%s' % self.local_id)
 

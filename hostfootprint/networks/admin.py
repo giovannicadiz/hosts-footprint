@@ -13,7 +13,7 @@ class NetworkAdmin(admin.ModelAdmin):
         'good_networks',
         'total_subnetworks'
     ]
-    search_fields = [ 'local']
+    search_fields = [ 'network']
     list_per_page = 40
 
 admin.site.register(Network, NetworkAdmin)

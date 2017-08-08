@@ -5,12 +5,10 @@
 ## add lock to check index
 ## sacar 2 consulta DB
 
-import sys
 #from __future__ import print_function
 from django.core.management.base import BaseCommand, CommandError
 from networks.models import *
 from django.db.utils import IntegrityError
-
 
 from django import db
 
@@ -107,10 +105,13 @@ def main(options):
     shared_info['sync'] = options['sync']
     #shared_info['force'] = options['force']
 
-    if 'all' in options.keys():
-        netobject = Network.objects.all()
+    if 'country' in options.keys():
+        netobject = Network.objects.filter(
+            local__activo = True,
+            local__city__country = options['country']
+        )
     else:
-        netobject = Network.objects.filter(network = options['net'])
+        netobject = Network.objects.filter(local__activo = True)
 
     sub_net = CreateSubNetworks()
     for i in netobject:
@@ -132,8 +133,9 @@ def main(options):
         pool = ThreadPool(processes=NMAPPROCS)
         while len(nets_shared_lists) > 0:
             nets = get_nets_and_clear()
-        if len(nets) > 0:
-            pool.map(scan_net, nets)
+            if len(nets) > 0:
+                pool.map(scan_net, nets)
+            time.sleep(1)
             #pool.close()
             #pool.join()
             
@@ -149,8 +151,8 @@ class Command(BaseCommand):
             dest='sync',
             default=False,
             help='Dont generate threads.')
-        parser.add_argument('-n', '--net', required=False, \
-                            help=u'network address')
+        parser.add_argument('-c', '--country', required=False, \
+                            help=u'country to search')
         parser.add_argument('-a', '--all', required=False, \
                             help=u'all networks')
         
@@ -162,3 +164,6 @@ hosts_shared_lists = manager.list([])
 hosts_error_list = manager.list([])
 nets_shared_lists = manager.list([])
 shared_info = manager.dict()
+
+if __name__ == "__main__":
+    main()

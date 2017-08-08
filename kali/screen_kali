@@ -1,0 +1,7 @@
+shell -${SHELL}
+startup_message off
+hardstatus on
+hardstatus alwayslastline
+hardstatus string '%{= kG}[ %{G}%H %{g}][%= %{= kw}%?%-Lw%?%{r}(%{W}%n*%f%t%?(%u)%?%{r})%{w}%?%+Lw%?%?%= %{g}][%{B} %m-%d %{W}%c %{g}]'
+
+screen -t winmapPais 0 /root/winmap.sh PAIS

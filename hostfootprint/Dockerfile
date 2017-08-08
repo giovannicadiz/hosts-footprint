@@ -6,6 +6,7 @@ RUN set -ex; \
     	http_proxy="http://172.32.49.146:9999"  https_proxy="http://172.32.49.146:9999" \ 
 	apt-get -y install --no-install-recommends \
 	nmap vim-tiny curl \
+	screen \
 	; \
 	rm -rf /var/lib/apt/lists/* ;
 	

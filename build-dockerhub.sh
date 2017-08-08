@@ -18,7 +18,7 @@ docker_build(){
 
 case $1 in
     all)
-	for i in `echo "global hostfootprint"`; do
+	for i in `echo "global hostfootprint kali"`; do
 	    docker_build $i $2
 	done
 	;;
@@ -27,5 +27,8 @@ case $1 in
 	;;
     hostfootprint)
 	docker_build hostfootprint $2
+	;;
+    kali)
+	docker_build kali $2
 	;;
 esac
