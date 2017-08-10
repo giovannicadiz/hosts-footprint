@@ -11,9 +11,17 @@ class NetworkAdmin(admin.ModelAdmin):
         'network',
         'description',
         'good_networks',
+        'country'
     ]
-    search_fields = [ 'network' ]
+
+    list_filter = [ 'local__activo', 'local__city__country' ]
+    # customer 
+    
+    search_fields = [ 'network', 'local__local_id' ]
     list_per_page = 40
+
+    def country(self, network):
+        return(network.local.city.country)
 
 admin.site.register(Network, NetworkAdmin)
 
