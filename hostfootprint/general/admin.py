@@ -1,4 +1,5 @@
 from django.contrib import admin
+
 from general.models import *
 
 # Register your models here.
@@ -27,11 +28,11 @@ class FlagAdmin(admin.ModelAdmin):
     
 class LocalAdmin(admin.ModelAdmin):
     list_display = [
-        'city',
+        'get_businessunit',
         'flag',
+        'city',
         'local_id',
-        'local_address',
-        'local_desc',
+        'activo'
     ]
     list_display_links = [
         'city',
@@ -46,7 +47,18 @@ class LocalAdmin(admin.ModelAdmin):
         'local_address',
         'local_type',
     ]
+
+    list_filter = [
+        'flag__businessunit__businessunit',
+        'flag__flag',
+        'activo',
+        'city__country',
+    ]
     list_per_page=40
+
+    def get_businessunit(self, obj):
+        return(obj.flag.businessunit)
+
 
 # lego
 admin.site.register(City, CityAdmin)

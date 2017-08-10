@@ -39,7 +39,9 @@ class LocalAdmin(admin.ModelAdmin):
         'flag',
         'local_id',
     ]
-    search_fileds = [ 'local_id' ]
+
+    search_fields = [ 'local_id' ]
+
     list_per_page = [
         'city',
         'flag',
