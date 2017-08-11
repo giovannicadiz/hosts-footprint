@@ -28,7 +28,7 @@ class FlagAdmin(admin.ModelAdmin):
     
 class LocalAdmin(admin.ModelAdmin):
     list_display = [
-        'get_businessunit',
+        'businessunit',
         'flag',
         'city',
         'local_id',
@@ -58,7 +58,7 @@ class LocalAdmin(admin.ModelAdmin):
     ]
     list_per_page=40
 
-    def get_businessunit(self, obj):
+    def businessunit(self, obj):
         return(obj.flag.businessunit)
 
 

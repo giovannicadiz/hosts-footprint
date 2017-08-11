@@ -31,7 +31,7 @@ es = ElsSaveMap(index, index)
 
 ## ELASTICSEARCH index
 
-NMAPPROCS=50
+NMAPPROCS=20
 HOSTSPROCS=10
 # windows = 'windows'
 # linux = 'linux'
