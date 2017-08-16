@@ -46,21 +46,16 @@ def do_winexe():
             pool.map(time_execution, hosts_args )
         time.sleep(1)
 
-def winmap_xp(user, host, timeout=30):
+def winmap_xp(user, host, timeout=50):
 
     winmap_xp_command = ['./winmap_xp.sh', \
                          user, host, DOMAIN, timeout]
+
+    result = []
+
     try:
-        #print (smbclient_command[0:-1])
         output = qx(winmap_xp_command[0:-1], timeout=winmap_xp_command[-1])
         err = [3]
-
-        if DOMAIN in str(output):
-            output = output.decode()
-            output = output.replace('\n', '')
-            output = output.split('|')
-            result = [ 0 ] + output
-
     except CalledProcessError as time_err:
         result = (2, time_err.output, time_err.returncode,  )
         #print(err)
@@ -68,17 +63,40 @@ def winmap_xp(user, host, timeout=30):
     except subprocess.TimeoutExpired as timeout:
         result = ( 1, timeout.output, timeout.timeout, timeout.stderr )
 
+    try:
+        if DOMAIN in str(output):
+            output = output.decode()
+            output = output.replace('Caption', 'hostname')
+            xp_list = output.split('\n')
+            xp_header = xp_list[0]
+            xp_value = xp_list[1]
+
+            xp_header_list = xp_header.split('|')
+            xp_value_list = xp_value.split('|')
+            result = []
+            count = 0
+            for i in xp_header_list:
+                i_value = ("%s=%s" % (xp_header_list[count], xp_value_list[count]) )
+                result.append(i_value)
+                count = count + 1
+                #output = output.replace('\n', '')
+                #output = output.split('|')
+            result.append('Caption=Windows XP')
+            result = [ 0 ] + result
+            print(result)
+    except:
+        print("fail: %s" ,  output)
+        result = [-2, output]
+
     return(result)
 
-
-def time_execution(host, timeout=30):
+def time_execution(host, timeout=40):
 
     command = 'cmd /c c:\Temp\winmap.bat'
     
     winexe_command = ['winexe', '-U', user, str('//' + host['_source']['ip']), command, timeout]
 
     try:
-        print (winexe_command[0:-1])
         output = qx(winexe_command[0:-1], timeout=winexe_command[-1])
         result = (output.decode("utf-8",errors='ignore'))
         result = result.split('\n')
@@ -97,7 +115,7 @@ def time_execution(host, timeout=30):
         
 def update_es_winexe(_id, winexe):
 
-    if 'Caption' not in winexe:
+    if 'Caption' not in str(winexe):
         parsed = -1
     else:
         parsed = 1
@@ -124,7 +142,6 @@ def update_es_winexe(_id, winexe):
         "doc": winmap_dict
     }
 
-    print(body)
     try:
         response = es.update(
             index=INDEX,
@@ -137,7 +154,7 @@ def update_es_winexe(_id, winexe):
         print("fail: %s" % _id)
 
 
-def smbclient(host, timeout=20):
+def smbclient(host, timeout=30):
 
     smbclient_command = ['./smbclient.sh', \
                          user, host['_source']['ip'], timeout]

@@ -1,7 +1,7 @@
 from django.contrib import admin
-from networks.models import Network
 
 from general.models import *
+
 # Register your models here.
 
 admin.site.site_header = 'LEGO - Admin Interface'
@@ -62,40 +62,8 @@ class LocalAdmin(admin.ModelAdmin):
         return(obj.flag.businessunit)
 
 
-class NetworkAdmin(admin.ModelAdmin):
-    list_display_links = [ 'network', 'local' ]
-    list_display = [
-        'local',
-        'network',
-        'description',
-        'country',
-        'activo'
-    ]
-
-    list_filter = [
-        'local__activo',
-        'local__city__country',
-        'local__flag__flag'
-    ]
-    # customer 
-    
-    search_fields = [ 'network', 'local__local_id' ]
-    list_per_page = 40
-
-    def country(self, network):
-        return(network.local.city.country)
-    
-    def activo(self, network):
-        return(network.local.activo)
-
-
-    
-
-
 # lego
 admin.site.register(City, CityAdmin)
 admin.site.register(BusinessUnit, BusinessUnitAdmin)
 admin.site.register(Flag, FlagAdmin)
 admin.site.register(Local, LocalAdmin)
-
-admin.site.register(Network, NetworkAdmin)

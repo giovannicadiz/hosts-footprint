@@ -70,6 +70,20 @@
 	"TotalPhysicalMemory": {
 	    "type": "long"
 	},
+	"Model": {
+	    "index": "true", 
+            "type": "keyword"
+	},
+	"NumberOfLogicalProcessors": {
+	    "type": "short"
+	},
+	"NumberOfProcessors": {
+	    "type": "short"
+	},
+	"Vendor": {
+	    "index": "true", 
+            "type": "keyword"
+	},
 	"IdentifyingNumber": {
 	    "index": "true", 
             "type": "keyword"

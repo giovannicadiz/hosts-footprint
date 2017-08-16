@@ -1,16 +1,13 @@
 @echo off
-wmic os get osarchitecture /value
-wmic baseboard get Product /value | findstr "Prod"
-wmic baseboard get Manufacturer /value | findstr "Manufacturer"
-wmic baseboard get version /value | findstr "Version"
-wmic baseboard get serialnumber /value | findstr "SerialNumber"
-wmic os get osarchitecture /value | findstr "OSArchitecture"
-wmic os get Caption /value | findstr "Caption"
-wmic csproduct get Name /value | findstr "Name"
-wmic csproduct get identifyingnumber /value | findstr "IdentifyingNumber"
-wmic csproduct get UUID /value | findstr "UUID"
-wmic computersystem get TotalPhysicalMemory /value | findstr "TotalPhysical"
-wmic os get FreePhysicalMemory /value | findstr "FreePhysical"
-wmic cpu get name /value | findstr "Name"
-wmic cpu get loadPercentage /value | findstr "LoadPercentage"
-wmic computersystem get username /value | findstr "UserName"
+
+wmic baseboard get Model,Product,Manufacturer,version,serialnumber /value | findstr "="
+
+wmic os get osarchitecture,Caption,FreePhysicalMemory /value | findstr "="
+
+wmic csproduct get Name,identifyingnumber,UUID /value | findstr "="
+
+wmic cpu get Name,loadPercentage /value | findstr "="
+
+wmic computersystem get username,TotalPhysicalMemory,NumberOfProcessors,NumberOfLogicalProcessors /value | findstr "="
+
+echo hostname=%COMPUTERNAME% | findstr "hostname"
