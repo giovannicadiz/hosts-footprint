@@ -20,7 +20,6 @@ class NetworkAdmin(admin.ModelAdmin):
         'local__flag__flag'
     ]
     # customer 
-    
     search_fields = [ 'network', 'local__local_id' ]
     list_per_page = 40
 

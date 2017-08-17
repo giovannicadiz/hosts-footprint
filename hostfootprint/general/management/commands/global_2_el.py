@@ -7,7 +7,7 @@ from general.models import *
 def main(options):
 
     # total tiendas
-    all_locals = Local.objects.all()
+    all_locals = Local.objects.filter(activo == True)
     print(len(all_locals))
 
     for x in all_locals:
