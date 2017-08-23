@@ -22,8 +22,8 @@ es_server = settings[1].replace('\n', '')
 es = Elasticsearch( hosts=[ es_server ])
 INDEX = 'nmap'
 MAP_TYPE = 'windows'
-PROCS=12
-WINEXEPROCS=6
+PROCS=20
+WINEXEPROCS=12
 
 def get_hosts_and_clear():
     result = []
@@ -46,7 +46,7 @@ def do_winexe():
             pool.map(time_execution, hosts_args )
         time.sleep(1)
 
-def winmap_xp(user, host, timeout=50):
+def winmap_xp(user, host, timeout=120):
 
     winmap_xp_command = ['./winmap_xp.sh', \
                          user, host, DOMAIN, timeout]
@@ -57,11 +57,11 @@ def winmap_xp(user, host, timeout=50):
         output = qx(winmap_xp_command[0:-1], timeout=winmap_xp_command[-1])
         err = [3]
     except CalledProcessError as time_err:
-        result = (2, time_err.output, time_err.returncode,  )
+        output = (2, time_err.output, time_err.returncode,  )
         #print(err)
 
     except subprocess.TimeoutExpired as timeout:
-        result = ( 1, timeout.output, timeout.timeout, timeout.stderr )
+        output = ( 1, timeout.output, timeout.timeout, timeout.stderr )
 
     try:
         if DOMAIN in str(output):
@@ -90,7 +90,7 @@ def winmap_xp(user, host, timeout=50):
 
     return(result)
 
-def time_execution(host, timeout=40):
+def time_execution(host, timeout=120):
 
     command = 'cmd /c c:\Temp\winmap.bat'
     
@@ -184,6 +184,9 @@ def get_ip(country):
     PAIS = country
     body = {
         "query": {
+            "sort" : [
+                { "data" : {"order" : "desc"}},
+            ],
             "bool": {
                 "must_not": {
                     "exists": {

@@ -1,4 +1,5 @@
 
+set -x
 if [ -z $1 ] || [ -z $2 ]  ; then
     echo "pass tag version"
     exit 2
@@ -10,7 +11,7 @@ rsync -av global/general/* hostfootprint/general/
 docker_build(){
     cd $1
     docker build -t "blacktourmaline/$1":"$2" .
-    docker tag `docker images | grep "blacktourmaline/$1" | grep "$2" | grep -v none | awk '{ print $3 }'` docker.io/blacktourmaline/"$1":"$2"
+    docker tag `docker images | grep "blacktourmaline/$1" | grep -F "$2" | grep -v none | awk '{ print $3 }'` docker.io/blacktourmaline/"$1":"$2"
 
     docker push docker.io/blacktourmaline/"$1":"$2"
     cd ..

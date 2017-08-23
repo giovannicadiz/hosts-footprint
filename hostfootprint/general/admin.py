@@ -28,26 +28,25 @@ class FlagAdmin(admin.ModelAdmin):
     
 class LocalAdmin(admin.ModelAdmin):
     list_display = [
-        'local_id',
-        'flag',
         'businessunit',
+        'flag',
         'city',
+        'local_id',
         'activo'
     ]
     list_display_links = [
-        'flag__flag',
-        'local_id',
         'city',
+        'flag',
+        'local_id',
     ]
 
-    search_fields = [ 'local_id', 'flag__flag', ]
+    search_fields = [ 'local_id' ]
 
     list_per_page = [
+        'city',
+        'flag',
         'local_id',
         'local_address',
-        'city__city',
-        'city__country',
-        'flag__flag',
         'local_type',
     ]
 
@@ -61,6 +60,7 @@ class LocalAdmin(admin.ModelAdmin):
 
     def businessunit(self, obj):
         return(obj.flag.businessunit)
+
 
 # lego
 admin.site.register(City, CityAdmin)
