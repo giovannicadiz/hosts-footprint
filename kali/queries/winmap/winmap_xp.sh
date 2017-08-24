@@ -21,7 +21,7 @@ get_user() {
 }
 
 get_cs(){
-    w32_cs=$(wmic -U "$LUSER" //$LHOST "SELECT Manufacturer,Model,NumberOfLogicalProcessors,NumberOfProcessors,TotalPhysicalMemory FROM Win32_ComputerSystem" | grep "|")
+    w32_cs=$(wmic -U "$LUSER" //$LHOST "SELECT Manufacturer,Model,NumberOfLogicalProcessors,NumberOfProcessors,TotalPhysicalMemory,Caption FROM Win32_ComputerSystem" | grep "|")
     header_cs=$(echo "$w32_cs" | head -n1)
     value_cs=$(echo "$w32_cs" | tail -n1)
 }
