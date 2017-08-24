@@ -64,8 +64,8 @@ def winmap_xp(user, host, timeout=120):
         output = ( 1, timeout.output, timeout.timeout, timeout.stderr )
 
     try:
-        if DOMAIN in str(output):
-            output = output.decode()
+        output = output.decode()
+        if DOMAIN in output:
             output = output.replace('Caption', 'hostname')
             xp_list = output.split('\n')
             xp_header = xp_list[0]
@@ -183,10 +183,10 @@ def smbclient(host, timeout=30):
 def get_ip(country):
     PAIS = country
     body = {
+        "sort" : [
+            { "created_at" : {"order" : "desc"}},
+        ],
         "query": {
-            "sort" : [
-                { "data" : {"order" : "desc"}},
-            ],
             "bool": {
                 "must_not": {
                     "exists": {
