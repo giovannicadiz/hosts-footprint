@@ -100,6 +100,8 @@ class ElsSaveMap(object):
 
         attribute['created_at'] = date_els
         #_id=(normalize + '-' + today)
+
+        # https://stackoverflow.com/questions/10747974/how-to-check-if-the-current-time-is-in-range-in-python
         _id=(normalize + '-' + str(date_els))
 
         response = self.client.index(

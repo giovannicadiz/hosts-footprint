@@ -11,7 +11,6 @@ from django.core.management.base import BaseCommand, CommandError
 from networks.models import *
 from django.db.utils import IntegrityError
 
-
 from django import db
 
 import sys, time
@@ -26,7 +25,7 @@ import ipaddress, nmap
 
 index='nmap'
 
-#es_lock = Lock()
+es_lock = Lock()
 es = ElsSaveMap(index, index)
 
 ## ELASTICSEARCH index
@@ -60,7 +59,6 @@ def do_print():
         hosts_args = get_hosts_and_clear()
         for host_args in hosts_args:
             print( host_args )
-            #es.es_save( host_args[0], host_args[1], host_args[2] )
     else:
         pool = ThreadPool(processes=HOSTSPROCS)
         while not shared_info['finalizar'] or len(hosts_shared_lists) > 0:
@@ -95,6 +93,12 @@ def scan_net( subnet_object ):
             es_windows = ('windows', host, subnet_object['netobject'])
             hosts_shared_lists.append( es_windows )
             #with es_lock:
+            #    exist = es.search( index=INDEX, q="""_id: "%s" """ % self.get_id())
+            #try:
+            #    return ( exist['hits']['hits'][0]['_source']['status'] in [0, -1] )
+            #except:
+            #    pass
+            #return False
             
     if len(hosts_map['22']) > 0:
         for host in hosts_map['22']:
@@ -119,10 +123,11 @@ def main(options):
     for i in netobject:
         list_sub_net = sub_net.make_subnetworks(i)
         for net in list_sub_net:
-            nets_shared_lists.append( {
-                'net': str(net),
-                'netobject': i
-            }
+            nets_shared_lists.append(
+                {
+                    'net': str(net),
+                    'netobject': i
+                }
             )
 
     if syncronic():
