@@ -1,10 +1,5 @@
 #encoding=utf8
 
-## git - OK
-## sacar els
-## add lock to check index
-## sacar 2 consulta DB
-
 import sys
 #from __future__ import print_function
 from django.core.management.base import BaseCommand, CommandError
@@ -22,11 +17,9 @@ from threading import Thread, Lock
 
 import ipaddress, nmap
 
-#from elasticsearch import Elasticsearch,helpers
-
 index='nmap'
 
-#es_lock = Lock()
+es_lock = Lock()
 es = ElsSaveMap(index, index)
 
 ## ELASTICSEARCH index
@@ -79,28 +72,26 @@ def scan_net( subnet_object ):
         arguments="-P0 -n --open"
     )
 
-    hosts_map = {
-        '445': [],
-        '22': []
-    }
-
     for host in nm.all_hosts():
-        if nm[host].has_tcp(445) is True:
-            hosts_map['445'].append(host)
-        if nm[host].has_tcp(22) is True:
-            hosts_map['22'].append(host)
+        # check if hosts exists:
+        with es_lock:
+            # ipaddress id on elasticsearch
+            ipid = "%s-%s" % (host, es.check_time())
+            exist = es.search( index=index, q="""_id: "%s" """ % ipid)
+        try:
+            exist['hits']['hits'][0]['_source']['status'] in [0, -1]
+            if nm[host].has_tcp(445) is True:
+                hosts_shared_lists.append(
+                    ('windows', host, subnet_object['netobject'])
+                )
+            if nm[host].has_tcp(22) is True:
+                es_linux = 
+                hosts_shared_lists.append(
+                    ('linux', host, subnet_object['netobject'])
+                )
+        except:
+            pass
 
-    if len(hosts_map['445']) > 0:
-        for host in hosts_map['445']:
-            es_windows = ('windows', host, subnet_object['netobject'])
-            hosts_shared_lists.append( es_windows )
-            #with es_lock:
-            
-    if len(hosts_map['22']) > 0:
-        for host in hosts_map['22']:
-            es_linux = ('linux', host, subnet_object['netobject'])
-            hosts_shared_lists.append( es_linux )
-            
 def main(options):
 
     shared_info['finalizar'] = False
