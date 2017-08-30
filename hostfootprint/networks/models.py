@@ -84,7 +84,7 @@ class ElsSaveMap(object):
         start = datetime.time(6, 0, 0)
         end = datetime.time(20, 0, 0)
 
-        if timenow >= start and < end:
+        if timenow >= start and timenow < end:
             return('06-20')
         else:
             return('20-06')
