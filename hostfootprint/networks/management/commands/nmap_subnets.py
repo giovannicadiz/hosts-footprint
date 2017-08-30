@@ -85,7 +85,6 @@ def scan_net( subnet_object ):
                     ('windows', host, subnet_object['netobject'])
                 )
             if nm[host].has_tcp(22) is True:
-                es_linux = 
                 hosts_shared_lists.append(
                     ('linux', host, subnet_object['netobject'])
                 )
