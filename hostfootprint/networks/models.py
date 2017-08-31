@@ -71,18 +71,20 @@ class ElsSaveMap(object):
         self.doc_type = doc_type
 
 
-    def check_time(self):
+    def check_time():
         '''
         import datetime
         20:00 - 06:00 = ip-20-06
         06:00 - 20:00 = ip-06-20
-
+    
         return('xx-xx')
         '''
 
-        timenow = time.now()
-        start = datetime.time(6, 0, 0)
-        end = datetime.time(20, 0, 0)
+        timenow = datetime.now()
+        timenow = timenow.time()
+    
+        start = time(6, 0, 0)
+        end = time(20, 0, 0)
 
         if timenow >= start and timenow < end:
             return('06-20')
