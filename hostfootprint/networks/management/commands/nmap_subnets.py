@@ -148,8 +148,6 @@ class Command(BaseCommand):
                             help=u'country to search')
         parser.add_argument('-a', '--all', required=False, \
                             help=u'all networks')
-        parser.add_argument('-s', '--sync', required=False, \
-                            help=u'syncronic')
         
     def handle(self, *args, **options):
         main(options)
