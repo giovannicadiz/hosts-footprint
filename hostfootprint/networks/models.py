@@ -123,7 +123,7 @@ class ElsSaveMap(object):
         # old 2
         #_id=(normalize + '-' + str(date_els))
         
-        _id=(normalize + '-' + check_time())
+        _id=(normalize + '-' + self.check_time())
 
         response = self.client.index(
             index=self.object_type,
