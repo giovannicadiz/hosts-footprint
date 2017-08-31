@@ -78,7 +78,7 @@ def scan_net( subnet_object ):
         with es_lock:
             # ipaddress id on elasticsearch
             ipid = "%s-%s" % (host, es.check_time())
-            exist = es.search( index=index, q="""_id: "%s" """ % ipid)
+            exist = es.client.search( index=index, q="""_id: "%s" """ % ipid)
         try:
             exist['hits']['hits'][0]['_source']['status'] in [0, -1]
             print(exist['hits']['hits'][0]['_source']['status'] in [0, -1])
