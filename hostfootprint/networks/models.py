@@ -4,6 +4,8 @@ from general.models import *
 from django.utils.translation import ugettext_lazy as _
 #import elasticsearch_opentracing
 
+from datetime import datetime,time
+
 from elasticsearch import Elasticsearch,helpers
 
 import ipaddress
@@ -62,17 +64,33 @@ class ElsSaveMap(object):
         init global variables
         pass host to elasticsearch connect
         '''
-        # elasticsearch
-        #self.client = Elasticsearch(
-        #    transport_class=elasticsearch_opentracing.TracingTransport,
-        #                            hosts=[ settings.ELASTICSEARCH ]
-        #)
         self.client = Elasticsearch(
             hosts=[ settings.ELASTICSEARCH ]
         )
         self.object_type = object_type
         self.doc_type = doc_type
 
+
+    def check_time(self):
+        '''
+        import datetime
+        20:00 - 06:00 = ip-20-06
+        06:00 - 20:00 = ip-06-20
+    
+        return('xx-xx')
+        '''
+
+        timenow = datetime.now()
+        timenow = timenow.time()
+    
+        start = time(6, 0, 0)
+        end = time(20, 0, 0)
+
+        if timenow >= start and timenow < end:
+            return('06-20')
+        else:
+            return('20-06')
+        
     def es_save(self, map_type, host, netobject):
 
         attribute = {
@@ -99,8 +117,13 @@ class ElsSaveMap(object):
         date_els = int( data.timestamp() * 1000 )
 
         attribute['created_at'] = date_els
+
+        # old 1
         #_id=(normalize + '-' + today)
-        _id=(normalize + '-' + str(date_els))
+        # old 2
+        #_id=(normalize + '-' + str(date_els))
+        
+        _id=(normalize + '-' + self.check_time())
 
         response = self.client.index(
             index=self.object_type,
@@ -108,4 +131,3 @@ class ElsSaveMap(object):
             doc_type=self.doc_type,
             body=attribute
         )
-        #print(response)

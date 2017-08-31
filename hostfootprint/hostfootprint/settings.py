@@ -77,12 +77,12 @@ WSGI_APPLICATION = 'hostfootprint.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'hostfootprint',
-        'USER': 'footprint',
-        'PASSWORD': 'footprint',
-        'HOST': '10.42.109.250',
-        'PORT': 5432,
+        'ENGINE': str(os.getenv('ENGINE')),
+        'NAME': str(os.getenv('DBNAME')),
+        'USER': str(os.getenv('DBUSER')),
+        'PASSWORD': str(os.getenv('DBPASSWORD')),
+        'HOST': str(os.getenv('DBHOST')),
+        'PORT': int(os.getenv('DBPORT')),
     }
 }
 
@@ -130,3 +130,5 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+
+ELASTICSEARCH = os.getenv('ELASTICSEARCH')

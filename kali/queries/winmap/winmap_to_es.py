@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import sys, time
+import sys, time, os
 from multiprocessing import Manager
 #from multiprocessing import Pool
 from multiprocessing.pool import ThreadPool
@@ -16,12 +16,13 @@ class EstadoNaoDeterminado(Exception):
     pass
 
 settings = open('settings.txt').readlines()
-user = settings[0].replace('\n', '')
-es_server = settings[1].replace('\n', '')
+
+user = os.getenv('MAPUSER')
+es_server = os.getenv('ELASTICSEARCH')
 
 es = Elasticsearch( hosts=[ es_server ])
 INDEX = 'nmap'
-MAP_TYPE = 'windows'
+MAP_TYPE = 'nmap'
 PROCS=20
 WINEXEPROCS=12
 
@@ -58,7 +59,6 @@ def winmap_xp(user, host, timeout=120):
         err = [3]
     except CalledProcessError as time_err:
         output = (2, time_err.output, time_err.returncode,  )
-        #print(err)
 
     except subprocess.TimeoutExpired as timeout:
         output = ( 1, timeout.output, timeout.timeout, timeout.stderr )
