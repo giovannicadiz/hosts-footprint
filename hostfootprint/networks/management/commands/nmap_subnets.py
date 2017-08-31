@@ -46,6 +46,7 @@ def get_nets_and_clear():
     return(result)
 
 def print_host(host_args):
+    print('enviando para elasticsearch: %s' % str(host_args))
     es.es_save( *host_args )
 
 def do_print():
@@ -81,7 +82,7 @@ def scan_net( subnet_object ):
         try:
             exist['hits']['hits'][0]['_source']['status'] in [0, -1]
             print(exist['hits']['hits'][0]['_source']['status'] in [0, -1])
-
+        except:
             if nm[host].has_tcp(445) is True:
                 hosts_shared_lists.append(
                     ('windows', host, subnet_object['netobject'])
@@ -90,8 +91,6 @@ def scan_net( subnet_object ):
                 hosts_shared_lists.append(
                     ('linux', host, subnet_object['netobject'])
                 )
-        except:
-            pass
 
 def main(options):
 
@@ -149,6 +148,8 @@ class Command(BaseCommand):
                             help=u'country to search')
         parser.add_argument('-a', '--all', required=False, \
                             help=u'all networks')
+        parser.add_argument('-s', '--sync', required=False, \
+                            help=u'syncronic')
         
     def handle(self, *args, **options):
         main(options)
