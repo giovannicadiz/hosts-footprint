@@ -71,7 +71,7 @@ class ElsSaveMap(object):
         self.doc_type = doc_type
 
 
-    def check_time():
+    def check_time(self):
         '''
         import datetime
         20:00 - 06:00 = ip-20-06
