@@ -79,9 +79,10 @@ def scan_net( subnet_object ):
             # ipaddress id on elasticsearch
             ipid = "%s-%s" % (host, es.check_time())
             exist = es.client.search( index=index, q="""_id: "%s" """ % ipid)
+
         try:
-            print(exist['hits']['hits'][0]['_source']['status'])
-            #print(exist['hits']['hits'][0]['_source']['status'] in [0, -1])
+            old = exist['hits']['hits'][0]['_source']['ip']
+            print('pass ... %s' % old)
         except:
             if nm[host].has_tcp(445) is True:
                 hosts_shared_lists.append(
@@ -89,7 +90,7 @@ def scan_net( subnet_object ):
                 )
             if nm[host].has_tcp(22) is True:
                 hosts_shared_lists.append(
-                    ('linux', host, subnet_object['netobject'])
+                   ('linux', host, subnet_object['netobject'])
                 )
 
 def main(options):

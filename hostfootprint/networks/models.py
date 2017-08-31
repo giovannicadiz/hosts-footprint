@@ -131,6 +131,3 @@ class ElsSaveMap(object):
             doc_type=self.doc_type,
             body=attribute
         )
-        
-        print(_id)
-        print(attribute)
