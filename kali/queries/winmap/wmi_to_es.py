@@ -27,9 +27,35 @@ PROCS=20
 WMICPROCS=12
 
 wmic_commands = {
-    # Win32_OperatingSystem - 'Caption' - Ok Windows XP
-    'Caption': 'SELECT Caption from Win32_OperatingSystem',
+    'Win32_OperatingSystem': 'SELECT Caption,FreePhysicalMemory from Win32_OperatingSystem',
+    'Win32_ComputerSystem': 'SELECT Model,Manufacturer,CurrentTimeZone,DaylightInEffect,EnableDaylightSavingsTime,NumberOfLogicalProcessors,NumberOfProcessors,Status,SystemType,ThermalState,TotalPhysicalMemory,UserName,Name from Win32_ComputerSystem',
+    'Win32_ComputerSystemProduct': "SELECT IdentifyingNumber from Win32_ComputerSystemProduct",
+    'Win32_Processor': "SELECT Family,LoadPercentage,Manufacturer,Name from Win32_Processor"
 }
+
+wmic_rows = [
+    'Caption',
+    'Model',
+    'Manufacturer',
+    'CurrentTimeZone',
+    'DaylightInEffect',
+    'EnableDaylightSavingsTime',
+    'NumberOfLogicalProcessors',
+    'NumberOfProcessors',
+    'Status',
+    'SystemType',
+    'ThermalState',
+    'TotalPhysicalMemory',
+    'FreePhysicalMemory',
+    'UserName',
+    'hostname',
+    'Name',
+    'IdentifyingNumber',
+    'ProcFamily',
+    'ProcLoadPercentage',
+    'ProcManufacturer',
+    'ProcName'
+]
 
 ###### MP
 def get_hosts_and_clear():
@@ -58,25 +84,28 @@ def subproc_exec(host):
     in action
     """
     result = {}
+    
     for k,v in wmic_commands.items():
         time.sleep(0.5)
-        result[k] = {}
 
         try:
-            v = 'wmic -U "%s" //%s %s' % (mapuser, host['_source']['ip'], v)
+            v = 'wmic -U "%s" //%s "%s"' % (mapuser, host['_source']['ip'], v)
             l_subproc = subprocess.check_output(v, shell=True, timeout=40)
+
+
+            result['parsed'] = 0
             line = l_subproc.decode().split('\n')
+            # replace hostname
+            if 'Win32_ComputerSystem' in line[0] and 'Win32_ComputerSystemProduct' not in line[0]:
+                line[1] = line[1].replace('|Name','|hostname')
+            
+            # replace procinfo 
+            if 'Win32_Processor' in line[0]:
+                line[1] = line[1].replace('Family','ProcFamily')
+                line[1] = line[1].replace('LoadPercentage','ProcLoadPercentage')
+                line[1] = line[1].replace('Manufacturer','ProcManufacturer')
+                line[1] = line[1].replace('Name','ProcName')
 
-            if k in [ 'Win32_OperatingSystem', 'Win32_ComputerSystem' ]:
-
-                header = line[1].split('|')
-                info = line[2].split('|')
-
-                pointer = 0
-                while pointer < len(header):
-                    result[header[pointer]] = info[pointer]
-                    pointer = pointer + 1
-                
             if k == 'Win32_QuickFixEngineering':
                 header = 'HotFixID'
                 result[header] = []
@@ -84,67 +113,40 @@ def subproc_exec(host):
                 for fix in line[2:-1]:
                     fix = fix.replace('|', '')
                     result[header].append(fix)
+            else:
+                # default output
+                header = line[1].split('|')
+                info = line[2].split('|')
 
-            if k == 'check_mk':
-                if 'open' in line:
-                    result[k] = 1
-                else:
-                    result[k] = 0
+                pointer = 0
+                while pointer < len(header):
+                    if header[pointer] in wmic_rows:
+                        result[header[pointer]] = info[pointer]
+                    pointer = pointer + 1
+
+        except subprocess.CalledProcessError as time_err:
+            result['parsed'] = time_err.returncode
+            result['err'] = "%s - %s" % (str(time_err.output), str(time_err.stderr) )
+
+
+        except subprocess.TimeoutExpired as timeout:
+            result['parsed'] = 1
+            result['err'] = "%s - %s" % (str(timeout.output), str(timeout.stderr) )
+
         except:
-            result[k] = False
+            result['parsed'] = 3
+            result['err'] = "not analyzed"
+            
+            
+    update_es(host['_id'], result)
 
-    print (result)
 ###############
-
-def wmi_execution(host, timeout=120):
+def update_es(_id, result):
     
-    # antivirus problem!
-    #command = 'cmd /c c:\Temp\winmap.bat'
-    #winexe_command = ['winexe', '-U', user, str('//' + host['_source']['ip']), command, timeout]
-
-    try:
-        output = qx(winexe_command[0:-1], timeout=winexe_command[-1])
-        result = (output.decode("utf-8",errors='ignore'))
-        result = result.split('\n')
-
-    except CalledProcessError as time_err:
-        result = ( time_err.returncode, str(time_err.output), str(time_err.stderr) )
-
-    except subprocess.TimeoutExpired as timeout:
-        result = ( 1, str(timeout.output), str(timeout.timeout), str(timeout.stderr) )
-        
-    if result[0] == 241:
-        result = winmap_xp(user, host['_source']['ip'])
-
-    update_es_winexe(host['_id'], result)
-        
-def update_es_winexe(_id, winexe):
-
-    if 'Caption' not in str(winexe):
-        parsed = -1
-    else:
-        parsed = 1
-
     _id = _id
-    winmap_dict = {
-        'parsed': parsed
-    }
-
-    for i in winexe:
-        try:
-            i = str(i).replace('\r', '')
-        except AttributeError:
-            continue
-        try:
-            kv = i.split('=')
-            winmap_dict[kv[0]] = kv[1]
-        except:
-            pass
-            #print('value fail on %s: %s' % ( _id, i ) )
-        
     # :-)
     body = {
-        "doc": winmap_dict
+        "doc": result
     }
 
     try:
@@ -157,30 +159,6 @@ def update_es_winexe(_id, winexe):
         print(response)
     except:
         print("fail: %s" % _id)
-
-
-def smbclient(host, timeout=30):
-
-    smbclient_command = ['./smbclient.sh', \
-                         user, host['_source']['ip'], timeout]
-
-    try:
-        output = qx(smbclient_command[0:-1], timeout=smbclient_command[-1])
-        end = [0 , 0, 'NV' ]
-        if 'Windows 5.1' in str(output):
-            end = [ 0, 0, 'Windows XP' ]
-            
-    except CalledProcessError as time_err:
-        end = [ 0, 2, time_err.output, time_err.returncode ]
-        if "TIMEOUT" in str(end[2]):
-            end[2] == 'NT_STATUS_IO_TIMEOUT'
-    
-    except subprocess.TimeoutExpired as timeout:
-        end = [ 0, 1, timeout.output, timeout.timeout, timeout.stderr ]
-        if "TIMEOUT" in str(end[2]):
-            end[2] == 'NT_STATUS_IO_TIMEOUT'
-    hosts_shared_lists.append( host )
-    #return(end)
 
 
 def get_ip(country):
