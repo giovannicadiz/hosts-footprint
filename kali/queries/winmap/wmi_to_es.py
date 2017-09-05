@@ -45,6 +45,119 @@ def do_winexe():
             pool.map(time_execution, hosts_args )
         time.sleep(1)
 
+
+####
+
+class WinCheck(object):
+    """
+    wmick = WinCheck(ip)
+
+    # Win32_OperatingSystem
+    # Win32_ComputerSystem
+    # Win32_QuickFixEngineering
+    # Win32_ComputerSystemProduct
+    """
+
+    """
+get_user() {
+    USERID_WIN=`wmic  -U "$LUSER" //$LHOST "SELECT LogonId FROM Win32_LogonSession WHERE LogonType = 2 or LogonType = 10" | tail -n1`
+    if [ "$?" = "0" ]; then
+	USERCAPTION=`wmic  -U "$LUSER" //$LHOST "Associators Of {Win32_LogonSession.LogonId=$USERID_WIN} WHERE AssocClass=Win32_LoggedOnUser Role=Dependent"| awk -F "|" '{ print $2}' | tail -n1`
+	if echo "$USERCAPTION" | grep -q "$LDOMAIN" ; then 
+	    header_user=$(printf '%s\n' "UserName")            
+	    value_user=$(printf '%s\n' "$USERCAPTION")
+	fi
+    fi
+}
+    """
+
+
+    """
+
+    1a - construir um modulo que receba um IP como parametro e monte o objeto:
+    data de inicializacao - OK
+    sistema operativo - OK
+    architetura - OK
+    service pack - OK
+
+    lista de patches instalados - OK
+    
+    ip - OK
+    hostname- OK
+    id = ip-dia-mes-ano - OK
+    """
+    def __init__(self, ip):
+        """
+        master object
+        'winuserpass': 'cencosud\_lego%p0o9i8u7y6'
+            'winuserpass': base64.b64decode('Y2VuY29zdWRcX2NsdXN0ZXJzZXJ2aWNlMSV2Nnk4YXlyNmN4MWwxN3dqcQo=').replace("\n")
+
+
+            'Win32_ComputerSystem': 'wmic  -U "%s" //%s "SELECT Model,Manufacturer,CurrentTimeZone,DaylightInEffect,EnableDaylightSavingsTime,NumberOfLogicalProcessors,NumberOfProcessors,Status,SystemType,ThermalState,TotalPhysicalMemory from Win32_ComputerSystem"' % (self.winobject['winuserpass'], self.winobject['ip']),
+
+        """
+        self.commands = {
+            # Win32_OperatingSystem
+            'Win32_OperatingSystem': 'SELECT Caption,CSDVersion,CSName,ServicePackMajorVersion,LastBootUpTime from Win32_OperatingSystem',
+            # Win32_ComputerSystem:
+            'Win32_ComputerSystem': 'SELECT Model,Manufacturer,CurrentTimeZone,DaylightInEffect,EnableDaylightSavingsTime,NumberOfLogicalProcessors,NumberOfProcessors,Status,SystemType,ThermalState,TotalPhysicalMemory from Win32_ComputerSystem',
+            # 
+
+            ########### Architecture #################### CRASH SOME OLDS S.O.s Queries (make result in blank)
+            #'Win32_OperatingSystem': 'SELECT OSArchitecture from Win32_OperatingSystem'
+            ########### HotfixID
+            'Win32_QuickFixEngineering': 'SELECT HotfixID from win32_QuickFixEngineering',
+            #
+            ########### CHECK_MK
+            #'check_mk': 'nmap --open -p 6556 %s 2>/dev/null | grep "6556/tcp"' % (self.winobject['ip']),
+        }
+        
+    def subproc_exec(self):
+        """
+        in action
+        """
+
+        result = {}
+        for k,v in self.commands.items():
+            time.sleep(0.5)
+            result[k] = {}
+
+            try:
+                l_subproc = subprocess.check_output(v, shell=True)
+                line = l_subproc.decode().split('\n')
+
+                if k in [ 'Win32_OperatingSystem', 'Win32_ComputerSystem' ]:
+
+                    header = line[1].split('|')
+                    info = line[2].split('|')
+
+                    pointer = 0
+                    while pointer < len(header):
+                        result[header[pointer]] = info[pointer]
+                        pointer = pointer + 1
+                
+                if k == 'Win32_QuickFixEngineering':
+                    header = 'HotFixID'
+                    result[header] = []
+
+                    for fix in line[2:-1]:
+                        fix = fix.replace('|', '')
+                        result[header].append(fix)
+
+                if k == 'check_mk':
+                    if 'open' in line:
+                        result[k] = 1
+                    else:
+                        result[k] = 0
+            except:
+                result[k] = False
+
+        self.winobject['result'] = result
+        return(self.winobject)
+
+    def console(self):
+        print(self.winobject['ip'], self.winobject['result'])
+
 ### END MP        
 def winmap_xp(user, host, timeout=120):
 

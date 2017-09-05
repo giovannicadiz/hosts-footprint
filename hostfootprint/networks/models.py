@@ -32,7 +32,6 @@ class Network(models.Model):
         return(u'%s' % self.network)
     
 class CreateSubNetworks(object):
-
     def __init__(self):
         pass
         #self.network_object = network_object
