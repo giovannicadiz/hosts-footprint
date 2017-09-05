@@ -83,7 +83,10 @@ def subproc_exec(host):
     """
     in action
     """
-    result = {}
+    result = {
+        'parsed': 3,
+        'err': 'not analyzed'
+    }
     
     for k,v in wmic_commands.items():
         time.sleep(0.5)
@@ -92,8 +95,9 @@ def subproc_exec(host):
             v = 'wmic -U "%s" //%s "%s"' % (mapuser, host['_source']['ip'], v)
             l_subproc = subprocess.check_output(v, shell=True, timeout=40)
 
-
             result['parsed'] = 0
+            result['err'] = "analized"
+            
             line = l_subproc.decode().split('\n')
             # replace hostname
             if 'Win32_ComputerSystem' in line[0] and 'Win32_ComputerSystemProduct' not in line[0]:
