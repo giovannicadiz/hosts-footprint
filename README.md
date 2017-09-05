@@ -26,6 +26,6 @@ Map Hosts on Network; Create Footprint; Login and query inside Hosts; Graph all 
 developer workstation
 
 ```
-docker run --name btkali -e COUNTRY='Brazil' -e DOMAIN='blacktourmaline.corp' -e MAPUSER='_sysmap%pass' -e ELASTICSEARCH='es.blacktourmaline.corp' --rm -d blacktourmaline/kali:2.0
+docker run --name btkali -e COUNTRY='Brazil' -e DOMAIN='blacktourmaline.corp' -e MAPUSER='_sysmap%pass' -e ELASTICSEARCH='es.blacktourmaline.corp' --rm -d blacktourmaline/kali:tag ping localhost
 docker exec -ti btkali /bin/bash
 ```
