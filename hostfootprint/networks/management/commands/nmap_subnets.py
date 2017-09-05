@@ -81,16 +81,7 @@ def scan_net( subnet_object ):
             body = {
                 "query": {
                     "bool": {
-                        "must": [
-                            {
-                                "term": { "_id": ipid }
-                            }
-                        ],
-                        "must_not": [
-                            {
-                                "exists": { "field": "parsed" }
-                            }
-                        ]
+                        "must":{ "term": { "_id": ipid } }
                     }
                 }
             }

@@ -69,7 +69,6 @@ class ElsSaveMap(object):
         self.object_type = object_type
         self.doc_type = doc_type
 
-
     def check_time(self):
         '''
         import datetime
@@ -78,17 +77,19 @@ class ElsSaveMap(object):
     
         return('xx-xx')
         '''
-
+        
         timenow = datetime.now()
         timenow = timenow.time()
     
         start = time(6, 0, 0)
         end = time(20, 0, 0)
 
+        timestr = timenow.strftime("%y%m%d")
+
         if timenow >= start and timenow < end:
-            return('06-20')
+            return(timestr + '-06-20')
         else:
-            return('20-06')
+            return(timestr + '-20-06')
         
     def es_save(self, map_type, host, netobject):
 
