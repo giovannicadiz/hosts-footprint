@@ -78,13 +78,13 @@ class ElsSaveMap(object):
         return('xx-xx')
         '''
         
-        timenow = datetime.now()
-        timenow = timenow.time()
+        datenow = datetime.now()
+        timenow = datenow.time()
     
         start = time(6, 0, 0)
         end = time(20, 0, 0)
 
-        timestr = timenow.strftime("%y%m%d")
+        timestr = datenow.strftime("%y%m%d")
 
         if timenow >= start and timenow < end:
             return(timestr + '-06-20')

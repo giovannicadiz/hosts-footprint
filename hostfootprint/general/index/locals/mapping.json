@@ -3,41 +3,41 @@
 	"created_at": {
 	    "type": "date",
             "format": "epoch_millis"
-        }, 
+        },
 	"country": {
-	    "index": "not_analyzed", 
-            "type": "string"
+	    "index": "true", 
+            "type": "keyword"
         },
 	"city": {
-	    "index": "not_analyzed", 
-            "type": "string"
+	    "index": "true", 
+            "type": "keyword"
         },
 	"businessunit": {
-	    "index": "not_analyzed", 
-            "type": "string"
+	    "index": "true", 
+            "type": "keyword"
         },
 	"flag": {
-	    "index": "not_analyzed", 
-            "type": "string"
+	    "index": "true", 
+            "type": "keyword"
         },
 	"local_id": {
-	    "index": "not_analyzed", 
-            "type": "string"
+	    "index": "true", 
+            "type": "keyword"
         },
 	"local_address": {
-	    "index": "not_analyzed", 
-            "type": "string"
+	    "index": "true", 
+            "type": "keyword"
         },
 	"local_desc": {
-	    "index": "not_analyzed", 
-            "type": "string"
+	    "index": "true", 
+            "type": "keyword"
 	},
 	"geo_point": {
 	    "type": "geo_point"
 	},
 	"network": {
-	    "index": "not_analyzed", 
-            "type": "string"
+	    "index": "true", 
+            "type": "keyword"
 	},
 	"total_subnets": {
 	    "type": "short"
