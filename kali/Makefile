@@ -3,5 +3,5 @@
 build-image: 
 	docker build -t blacktourmaline/kali:${VER} .
 
-push:
+push: build-image
 	docker push docker.io/blacktourmaline/kali:${VER}

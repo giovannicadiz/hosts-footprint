@@ -22,8 +22,8 @@ es_lock = Lock()
 es = ElsSaveMap(index, index)
 
 ## ELASTICSEARCH index
-NMAPPROCS=str(os.getenv('NMAPPROCS')),
-HOSTSPROCS=str(os.getenv('HOSTSPROCS')),
+NMAPPROCS=int(os.getenv('NMAPPROCS'))
+HOSTSPROCS=int(os.getenv('HOSTSPROCS'))
 # windows = 'windows'
 # linux = 'linux'
 
@@ -113,10 +113,10 @@ def main(options):
             local__activo = True,
             local__city__country = options['country']
         )
-    elif: 'flag' in options.keys():
+    elif 'flag' in options.keys():
         netobject = Network.objects.filter(
             local__activo = True,
-            local__flag = options['flag']
+            local__flag__flag = options['flag']
         )
     else:
         netobject = Network.objects.filter(local__activo = True)

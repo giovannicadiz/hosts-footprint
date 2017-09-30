@@ -106,7 +106,10 @@ def subproc_exec(host):
             line = l_subproc.decode().split('\n')
             # replace hostname
             if 'Win32_ComputerSystem' in line[0] and 'Win32_ComputerSystemProduct' not in line[0]:
-                line[1] = line[1].replace('|Name','|hostname')
+                if '|Name' in line[1]:
+                    line[1] = line[1].replace('|Name','|hostname')
+                if '|CSName' in line[1]:
+                    line[1] = line[1].replace('|CSName','|hostname')
             
             # replace procinfo 
             if 'Win32_Processor' in line[0]:
