@@ -27,7 +27,7 @@ PROCS=20
 WMICPROCS=12
 
 wmic_commands = {
-    'Win32_OperatingSystem': 'SELECT Caption,FreePhysicalMemory from Win32_OperatingSystem',
+    'Win32_OperatingSystem': 'SELECT Caption,CSName,FreePhysicalMemory from Win32_OperatingSystem',
     'Win32_ComputerSystem': 'SELECT Model,Manufacturer,CurrentTimeZone,DaylightInEffect,EnableDaylightSavingsTime,NumberOfLogicalProcessors,NumberOfProcessors,Status,SystemType,ThermalState,TotalPhysicalMemory,UserName,Name from Win32_ComputerSystem',
     'Win32_ComputerSystemProduct': "SELECT IdentifyingNumber from Win32_ComputerSystemProduct",
     'Win32_Processor': "SELECT Family,LoadPercentage,Manufacturer,Name from Win32_Processor"
@@ -50,6 +50,7 @@ wmic_rows = [
     'UserName',
     'hostname',
     'Name',
+    'CSName',
     'IdentifyingNumber',
     'ProcFamily',
     'ProcLoadPercentage',

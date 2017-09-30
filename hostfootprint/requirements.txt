@@ -7,3 +7,4 @@ elasticsearch
 pytz
 django_countries
 geopy
+django-import-export
