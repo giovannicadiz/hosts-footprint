@@ -16,7 +16,7 @@ from threading import Thread, Lock
 
 import ipaddress, nmap
 
-index='nmap'
+index='nmap_v2'
 
 es_lock = Lock()
 es = ElsSaveMap(index, index)
@@ -43,15 +43,13 @@ def get_nets_and_clear():
     return(result)
 
 def print_host(host_args):
-    print('enviando para elasticsearch: %s' % str(host_args))
     es.es_save( *host_args )
 
 def do_print():
     if syncronic():
         hosts_args = get_hosts_and_clear()
         for host_args in hosts_args:
-            print( host_args )
-            #es.es_save( host_args[0], host_args[1], host_args[2] )
+            es.es_save( *host_args )
     else:
         pool = ThreadPool(processes=HOSTSPROCS)
         while not shared_info['finalizar'] or len(hosts_shared_lists) > 0:
@@ -62,7 +60,6 @@ def do_print():
 
 # nmap
 def scan_net( subnet_object ):
-    print( subnet_object['net'] )
     nm = nmap.PortScanner()
     nm.scan(
         hosts=subnet_object['net'],

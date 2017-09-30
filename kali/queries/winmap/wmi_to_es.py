@@ -21,7 +21,7 @@ country = os.getenv('COUNTRY')
 DOMAIN = os.getenv('DOMAIN')
 
 es = Elasticsearch( hosts=[ es_server ])
-INDEX = 'nmap'
+INDEX = 'nmap_v2'
 MAP_TYPE = 'windows'
 PROCS=20
 WMICPROCS=12
@@ -107,9 +107,7 @@ def subproc_exec(host):
             # replace hostname
             if 'Win32_ComputerSystem' in line[0] and 'Win32_ComputerSystemProduct' not in line[0]:
                 if '|Name' in line[1]:
-                    line[1] = line[1].replace('|Name','|hostname')
-                if '|CSName' in line[1]:
-                    line[1] = line[1].replace('|CSName','|hostname')
+                    line[1] = line[1].replace('|Name','|CSName')
             
             # replace procinfo 
             if 'Win32_Processor' in line[0]:
