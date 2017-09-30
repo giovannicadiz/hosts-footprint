@@ -3,7 +3,5 @@
 build-image: 
 	docker build -t blacktourmaline/hostfootprint:${VER} .
 
-push:
-	docker tag ${TAG} blacktourmaline/hostfootprint:${VER}
-
+push: build-image
 	docker push docker.io/blacktourmaline/hostfootprint:${VER}

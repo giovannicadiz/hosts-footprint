@@ -6,10 +6,9 @@ from django.core.management.base import BaseCommand, CommandError
 from networks.models import *
 from django.db.utils import IntegrityError
 
-
 from django import db
 
-import sys, time
+import sys, time,os
 from multiprocessing import Manager
 #from multiprocessing import Pool
 from multiprocessing.pool import ThreadPool
@@ -23,12 +22,10 @@ es_lock = Lock()
 es = ElsSaveMap(index, index)
 
 ## ELASTICSEARCH index
-
-NMAPPROCS=20
-HOSTSPROCS=10
+NMAPPROCS=str(os.getenv('NMAPPROCS')),
+HOSTSPROCS=str(os.getenv('HOSTSPROCS')),
 # windows = 'windows'
 # linux = 'linux'
-
 
 def syncronic():
     return shared_info['sync']
@@ -116,6 +113,11 @@ def main(options):
             local__activo = True,
             local__city__country = options['country']
         )
+    elif: 'flag' in options.keys():
+        netobject = Network.objects.filter(
+            local__activo = True,
+            local__flag = options['flag']
+        )
     else:
         netobject = Network.objects.filter(local__activo = True)
 
@@ -123,10 +125,11 @@ def main(options):
     for i in netobject:
         list_sub_net = sub_net.make_subnetworks(i)
         for net in list_sub_net:
-            nets_shared_lists.append( {
-                'net': str(net),
-                'netobject': i
-            }
+            nets_shared_lists.append(
+                {
+                    'net': str(net),
+                    'netobject': i
+                }
             )
 
     if syncronic():
@@ -158,6 +161,8 @@ class Command(BaseCommand):
             default=False,
             help='Dont generate threads.')
         parser.add_argument('-c', '--country', required=False, \
+                            help=u'country to search')
+        parser.add_argument('-f', '--flag', required=False, \
                             help=u'country to search')
         parser.add_argument('-a', '--all', required=False, \
                             help=u'all networks')
