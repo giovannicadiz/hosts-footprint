@@ -21,7 +21,7 @@ country = os.getenv('COUNTRY')
 DOMAIN = os.getenv('DOMAIN')
 
 es = Elasticsearch( hosts=[ es_server ])
-INDEX = 'nmap_v2'
+INDEX = 'nmap_v3'
 MAP_TYPE = 'windows'
 PROCS=20
 WMICPROCS=12
@@ -31,7 +31,9 @@ wmic_commands = {
     'Win32_OperatingSystem_server': 'SELECT CSDVersion,CSName,ServicePackMajorVersion,LastBootUpTime from Win32_OperatingSystem',
     'Win32_ComputerSystem': 'SELECT Model,Manufacturer,CurrentTimeZone,DaylightInEffect,EnableDaylightSavingsTime,NumberOfLogicalProcessors,NumberOfProcessors,Status,SystemType,ThermalState,TotalPhysicalMemory,UserName,Name from Win32_ComputerSystem',
     'Win32_ComputerSystemProduct': "SELECT IdentifyingNumber from Win32_ComputerSystemProduct",
-    'Win32_Processor': "SELECT Family,LoadPercentage,Manufacturer,Name from Win32_Processor"
+    'Win32_Processor': "SELECT Family,LoadPercentage,Manufacturer,Name from Win32_Processor",
+    'Win32_Product': 'SELECT Name,Version from Win32_Product where Name="Symantec Endpoint Protection"',
+    'Win32_QuickFixEngineering': 'SELECT HotfixID from win32_QuickFixEngineering'
 }
 
 wmic_rows = [
@@ -59,7 +61,10 @@ wmic_rows = [
     'CSDVersion',
     'CSName',
     'ServicePackMajorVersion',
-    'LastBootUpTime'
+    'LastBootUpTime',
+    'Name_AV',
+    'Version_AV',
+    'HotFixID'
 ]
 
 ###### MP
@@ -109,6 +114,11 @@ def subproc_exec(host):
                 if '|Name' in line[1]:
                     line[1] = line[1].replace('|Name','|CSName')
             
+            # replace AV Infor
+            if 'Win32_Product' in line[0]:
+                line[1] = line[1].replace('|Name','|Name_AV')
+                line[1] = line[1].replace('|Version','|Version_AV')
+
             # replace procinfo 
             if 'Win32_Processor' in line[0]:
                 line[1] = line[1].replace('Family','ProcFamily')
@@ -195,7 +205,7 @@ def get_ip(country):
         index=INDEX,
         doc_type=INDEX,
         body=body,
-        size=1000,
+        size=200,
     )
 
     ips = []

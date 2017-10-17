@@ -8,7 +8,7 @@ while :; do
     for i in `echo "$COUNTRIES"`; do
 	echo "$i: $(date)" >> $LOG
 	./manage.py nmap_subnets -c "$i" &
-	sleep 10
+	sleep 60
     done
 
     while ps -ef | grep -v grep | grep nmap_subnets; do

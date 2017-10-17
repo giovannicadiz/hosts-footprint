@@ -16,7 +16,7 @@ from threading import Thread, Lock
 
 import ipaddress, nmap
 
-index='nmap_v2'
+index='nmap_v3'
 
 es_lock = Lock()
 es = ElsSaveMap(index, index)
@@ -88,7 +88,6 @@ def scan_net( subnet_object ):
 
         try:
             old = exist['hits']['hits'][0]['_source']['ip']
-            print('pass ... %s' % old)
         except:
             if nm[host].has_tcp(445) is True:
                 hosts_shared_lists.append(
