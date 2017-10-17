@@ -30,9 +30,9 @@ wmic_commands = {
     'Win32_OperatingSystem': 'SELECT Caption,FreePhysicalMemory from Win32_OperatingSystem',
     'Win32_OperatingSystem_server': 'SELECT CSDVersion,CSName,ServicePackMajorVersion,LastBootUpTime from Win32_OperatingSystem',
     'Win32_ComputerSystem': 'SELECT Model,Manufacturer,CurrentTimeZone,DaylightInEffect,EnableDaylightSavingsTime,NumberOfLogicalProcessors,NumberOfProcessors,Status,SystemType,ThermalState,TotalPhysicalMemory,UserName,Name from Win32_ComputerSystem',
-    'Win32_ComputerSystemProduct': "SELECT IdentifyingNumber from Win32_ComputerSystemProduct",
-    'Win32_Processor': "SELECT Family,LoadPercentage,Manufacturer,Name from Win32_Processor",
-    'Win32_Product': 'SELECT Name,Version from Win32_Product where Name="Symantec Endpoint Protection"',
+    'Win32_ComputerSystemProduct': 'SELECT IdentifyingNumber from Win32_ComputerSystemProduct',
+    'Win32_Processor': 'SELECT Family,LoadPercentage,Manufacturer,Name from Win32_Processor',
+    'Win32_Product': '''SELECT Name,Version from Win32_Product where Name='Symantec Endpoint Protection' ''',
     'Win32_QuickFixEngineering': 'SELECT HotfixID from win32_QuickFixEngineering'
 }
 
@@ -103,12 +103,13 @@ def subproc_exec(host):
 
         try:
             v = 'wmic -U "%s" //%s "%s"' % (mapuser, host['_source']['ip'], v)
-            l_subproc = subprocess.check_output(v, shell=True, timeout=40)
+            l_subproc = subprocess.check_output(v, shell=True, timeout=100)
 
             result['parsed'] = 0
             result['err'] = "analized"
-            
+
             line = l_subproc.decode().split('\n')
+
             # replace hostname
             if 'Win32_ComputerSystem' in line[0] and 'Win32_ComputerSystemProduct' not in line[0]:
                 if '|Name' in line[1]:
@@ -116,8 +117,8 @@ def subproc_exec(host):
             
             # replace AV Infor
             if 'Win32_Product' in line[0]:
-                line[1] = line[1].replace('|Name','|Name_AV')
-                line[1] = line[1].replace('|Version','|Version_AV')
+                line[1] = line[1].replace('Name','Name_AV')
+                line[1] = line[1].replace('Version','Version_AV')
 
             # replace procinfo 
             if 'Win32_Processor' in line[0]:
