@@ -23,8 +23,8 @@ DOMAIN = os.getenv('DOMAIN')
 es = Elasticsearch( hosts=[ es_server ])
 INDEX = 'nmap_v3'
 MAP_TYPE = 'windows'
-PROCS=20
-WMICPROCS=12
+PROCS=10
+WMICPROCS=8
 
 wmic_commands = {
     'Win32_OperatingSystem': 'SELECT Caption,FreePhysicalMemory from Win32_OperatingSystem',
@@ -33,7 +33,8 @@ wmic_commands = {
     'Win32_ComputerSystemProduct': 'SELECT IdentifyingNumber from Win32_ComputerSystemProduct',
     'Win32_Processor': 'SELECT Family,LoadPercentage,Manufacturer,Name from Win32_Processor',
     'Win32_Product': '''SELECT Name,Version from Win32_Product where Name='Symantec Endpoint Protection' ''',
-    'Win32_QuickFixEngineering': 'SELECT HotfixID from win32_QuickFixEngineering'
+    'Win32_QuickFixEngineering': 'SELECT HotfixID from win32_QuickFixEngineering',
+    'Win32_NetworkAdapterConfiguration': 'SELECT IPAddress,MACAddress,TcpNumConnections,DHCPServer,ServiceName from Win32_NetworkAdapterConfiguration'
 }
 
 wmic_rows = [
@@ -64,7 +65,11 @@ wmic_rows = [
     'LastBootUpTime',
     'Name_AV',
     'Version_AV',
-    'HotFixID'
+    'HotFixID',
+    'IPAddress',
+    'MACAddress',
+    'DHCPServer',
+    'ServiceName'
 ]
 
 ###### MP
@@ -115,7 +120,7 @@ def subproc_exec(host):
                 if '|Name' in line[1]:
                     line[1] = line[1].replace('|Name','|CSName')
             
-            # replace AV Infor
+            # replace AV Information
             if 'Win32_Product' in line[0]:
                 line[1] = line[1].replace('Name','Name_AV')
                 line[1] = line[1].replace('Version','Version_AV')
@@ -157,7 +162,6 @@ def subproc_exec(host):
         except:
             result['parsed'] = 3
             result['err'] = "not analyzed"
-            
             
     update_es(host['_id'], result)
 
