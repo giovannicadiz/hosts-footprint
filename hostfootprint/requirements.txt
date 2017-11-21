@@ -5,6 +5,6 @@ python-nmap
 ipython
 elasticsearch
 pytz
-django_countries
 geopy
 django-import-export
+django-tagulous

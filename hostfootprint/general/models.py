@@ -7,10 +7,7 @@ from elasticsearch import Elasticsearch,helpers
 from geopy.geocoders import Nominatim
 from geopy.exc import GeopyError
 from datetime import datetime
-
-
 import tagulous.models
-
 
 class TagModel(tagulous.models.TagModel,):
     class TagMeta:
@@ -128,9 +125,6 @@ class GeoPoint(object):
 
 
 
-
-
-
 class Country(models.Model):
     country_name = models.CharField(verbose_name=(u'Country'),
                                     max_length=100,
@@ -158,6 +152,7 @@ class City(models.Model):
                             unique=True)
 
     def __str__(self):
+        return(u'%s' % self.city)
         return(u'%s' % self.city)
 
 class BusinessUnit(models.Model):
