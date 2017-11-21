@@ -6,6 +6,27 @@ from general.models import *
 
 admin.site.site_header = 'LEGO - Admin Interface'
 
+
+class KpiAdmin(admin.ModelAdmin):
+    list_display_links = ['kpi_name']
+    list_display = [ 'kpi_name','tag_list']
+    list_filter = [ 'kpi_name' ]
+    search_fields = ['kpi_name']
+    list_per_page=40
+    def get_queryset(self, request):
+        return super(KpiAdmin, self).get_queryset(request).prefetch_related('tags')
+
+    def tag_list(self, obj):
+        return u", ".join(o.name for o in obj.tags.all())
+
+
+class CountryAdmin(admin.ModelAdmin):
+    list_display_links = ['country_name']
+    list_display = [ 'country_name']
+    list_filter = [ 'country_name' ]
+    search_fields = ['country_name']
+    list_per_page=40
+
 class CityAdmin(admin.ModelAdmin):
     list_display_links = ['city']
     list_display = [ 'country', 'city' ]
@@ -63,6 +84,8 @@ class LocalAdmin(admin.ModelAdmin):
 
 
 # lego
+admin.site.register(Kpi, KpiAdmin)
+admin.site.register(Country, CountryAdmin)
 admin.site.register(City, CityAdmin)
 admin.site.register(BusinessUnit, BusinessUnitAdmin)
 admin.site.register(Flag, FlagAdmin)
