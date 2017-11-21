@@ -2,14 +2,29 @@ from __future__ import unicode_literals
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
-from django_countries.fields import CountryField
-
+# from django_countries.fields import CountryField
 from elasticsearch import Elasticsearch,helpers
-
 from geopy.geocoders import Nominatim
 from geopy.exc import GeopyError
-
 from datetime import datetime
+
+
+import tagulous.models
+
+
+class TagModel(tagulous.models.TagModel,):
+    class TagMeta:
+        force_lowercase = True
+
+
+class Kpi(models.Model):
+    kpi_name = models.CharField(verbose_name=(u'KPI Name'), max_length=100, unique=True)   
+    tags = tagulous.models.TagField(to=TagModel)
+    def __str__(self):
+        return(u'%s' % self.kpi_name)
+
+
+
 
 # Create your models here.
 class DateUTC(object):
@@ -95,7 +110,7 @@ class GeoPoint(object):
         try:
             location = self.geolocator.geocode(u'%s, %s' % (
                 attribute.city.city,
-                attribute.city.country.name)
+                attribute.city.country)
             )
 
             if location is None:
@@ -111,13 +126,33 @@ class GeoPoint(object):
 
         return(attribute)
 
+
+
+
+
+
+class Country(models.Model):
+    country_name = models.CharField(verbose_name=(u'Country'),
+                                    max_length=100,
+                                    unique=True)    
+    service_manager = models.CharField(verbose_name=(u'Service Manager'),
+                                    max_length=100, null=True)
+    jefe_datacenter = models.CharField(verbose_name=(u'Datacenter Boss'),
+                                    max_length=100, null=True)
+    lider_cau = models.CharField(verbose_name=(u'Lider CAU'),
+                                    max_length=100, null=True) 
+
+    def __str__(self):
+        return(u'%s' % self.country_name)
+        
+
 # global django models
 class City(models.Model):
     
     '''
     network City
     '''
-    country = CountryField(blank_label='(select country)')
+    country = models.ForeignKey(Country)
     city = models.CharField(max_length=40,
                             verbose_name=(u'City'),
                             unique=True)
