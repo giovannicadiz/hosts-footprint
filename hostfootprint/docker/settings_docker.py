@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '@8^-$=9y_3=j*-%k#trsvcpa#un^35pg=+_dss5=y39tq+e1v%'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -64,7 +64,9 @@ ROOT_URLCONF = 'hostfootprint.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [
+            os.path.join(BASE_DIR, str(os.getenv('TEMPLATES_PATH')))
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -83,22 +85,15 @@ WSGI_APPLICATION = 'hostfootprint.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': str(os.getenv('ENGINE')),
-#         'NAME': str(os.getenv('DBNAME')),
-#         'USER': str(os.getenv('DBUSER')),
-#         'PASSWORD': str(os.getenv('DBPASSWORD')),
-#         'HOST': str(os.getenv('DBHOST')),
-#         'PORT': int(os.getenv('DBPORT')),
-#     }
-# }
-
 DATABASES = {
-   'default': {
-       'ENGINE': 'django.db.backends.sqlite3',
-       'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-   }
+     'default': {
+         'ENGINE': str(os.getenv('ENGINE')),
+         'NAME': str(os.getenv('DBNAME')),
+         'USER': str(os.getenv('DBUSER')),
+         'PASSWORD': str(os.getenv('DBPASSWORD')),
+         'HOST': str(os.getenv('DBHOST')),
+         'PORT': int(os.getenv('DBPORT')),
+     }
 }
 
 # Password validation
@@ -138,9 +133,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
- ]
+
+STATIC_ROOT = os.path.join(BASE_DIR, str(os.getenv('STATIC_PATH')))
 
 REST_FRAMEWORK = {
     #FILTER
@@ -152,6 +146,7 @@ REST_FRAMEWORK = {
     #PAGINATION
     'DEFAULT_PAGINATION_CLASS':
         'rest_framework.pagination.LimitOffPagination',
+        
     'DEFAULT_PERMISSIONS_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
     ),
