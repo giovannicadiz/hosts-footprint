@@ -143,22 +143,25 @@ STATICFILES_DIRS = [
  ]
 
 REST_FRAMEWORK = {
-    #FILTER
-    'DEFAULT_FILTER_BACKENDS':(
+    # filter
+    'DEFAULT_FILTER_BACKENDS': (
         'rest_framework.filters.SearchFilter',
         'rest_framework.filters.OrderingFilter',
         'django_filters.rest_framework.DjangoFilterBackend',
-     ),
-    #PAGINATION
-    'DEFAULT_PAGINATION_CLASS':
-        'rest_framework.pagination.LimitOffPagination',
-    'DEFAULT_PERMISSIONS_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
     ),
-    #API JSON BLOCK EDIT
-    'DEFAULT_RENDERER_CLASSES':(
-        'rest_framework.renderers.JsonRenderer',    
-     ),
+    # pagination
+    'DEFAULT_PAGINATION_CLASS':
+        'rest_framework.pagination.LimitOffsetPagination',
+        # 'PAGE_SIZE': 100, paginacion api en 100
+
+    'DEFAULT_PERMISSIONS_CLASSES': (
+         'rest_framework.permissions.IsAuthenticated',
+    ),
+    # API JSON BLOCK EDIT
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+    ),
+
 }
 
 ELASTICSEARCH = os.getenv('ELASTICSEARCH')
