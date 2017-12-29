@@ -1,0 +1,21 @@
+{% extends "base_login.html" %}
+{% block title %}Inicia Sesion{% endblock %}
+
+{% block content %}
+<style>
+    .Contenedor {
+        text-align: center;
+    }
+</style>
+<div class="Contenedor">
+    <h1>Inventario Host</h1>
+    <form method="post">
+        <h1>
+            <img src="/static/admin/img/logo_cencosud.jpg" width="160" height="80">
+        </h1>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" name="submit">
+    </form>
+</div>
+{% endblock content %}
