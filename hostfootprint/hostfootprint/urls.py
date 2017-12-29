@@ -16,13 +16,20 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 from rest_framework import routers
-from inventario_app.views import InventarioViewSet
+from inventario_app.views import InventarioViewSet,InventarioListaView
+from perfiles_app.views import SignUpView, BienvenidaView, SignInView, SignOutView
+from django.contrib.auth.decorators import login_required
 
 router = routers.DefaultRouter()
 router.register(r'',InventarioViewSet)
 
-
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
-    url(r'^api/', include(router.urls)), # API
+    url(r'^admin/', admin.site.urls), # admin
+    url(r'^api/', include(router.urls)), # api
+    url(r'^inventario/$', login_required(InventarioListaView.as_view(template_name="index.html")),name='inventario'), # view inventario, login required
+    url(r'^$', BienvenidaView.as_view(), name='bienvenida'), # page home
+    url (r'^registrate/$', SignUpView.as_view (), name='sign_up'), # registrar user
+    url (r'^inicia-sesion/$', SignInView.as_view (), name='sign_in'), # login
+    url (r'^cerrar-sesion/$', SignOutView.as_view (), name='sign_out'), # logout
 ]
+
