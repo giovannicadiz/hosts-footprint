@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'networks',
     'general',
     'tagulous',
-   
+    'perfiles_app,   
     'inventario_app',
     'rest_framework',
     'import_export',
@@ -152,8 +152,14 @@ REST_FRAMEWORK = {
     ),
     #API JSON BLOCK EDIT
     'DEFAULT_RENDERER_CLASSES':(
-        'rest_framework.renderers.JsonRenderer',    
+        'rest_framework.renderers.JsonRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
      ),
 }
+# LOGIN
+LOGIN_URL = '/inicia-sesion/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
 
+#
 ELASTICSEARCH = os.getenv('ELASTICSEARCH')
